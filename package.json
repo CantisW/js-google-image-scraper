@@ -12,7 +12,7 @@
   ],
   "main": "index.js",
   "scripts": {
-    "test": "npm run test.js"
+    "test": "node test.js"
   },
   "keywords": [
     "google",
