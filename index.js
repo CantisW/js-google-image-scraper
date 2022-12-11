@@ -15,13 +15,6 @@ const headers = {
 const baseUrl = "https://www.google.com/search";
 
 /**
- * The HTML returned by the GET request ideally would return image data alongside the actual HTML (which is in class 'rg_i Q4LuWd')
- * but Google decided that would be bad for performance, so they instead decided to
- * procedurally load images from some script tag in the HTML (or so I think).
- * We are basically finding this script tag and selecting the third one, which contains the actual image data.
- */
-
-/**
  * Scrapes Google for the first image that appears.
  * @param {string} query The string to be searched.
  * @param {number} limit How many URLs to scrape? (default 1)
@@ -39,6 +32,13 @@ const scrape = async (query, limit = 1) => {
         ijn: "0", // pg number
     };
 
+    /**
+     * The HTML returned by the GET request ideally would return image data alongside the actual HTML (which is in class 'rg_i Q4LuWd')
+     * but Google decided that would be bad for performance, so they instead decided to
+     * procedurally load images from some script tag in the HTML (or so I think).
+     * We are basically finding this script tag and selecting the third one, which contains the actual image data.
+     */
+
     const res = await axios.get(baseUrl, { headers: headers, params: params })
     const $ = cheerio.load(res.data);
     let img = $('script:contains("AF_initDataCallback")')[2];
@@ -51,7 +51,7 @@ const scrape = async (query, limit = 1) => {
     const imgObjects = img.data[56][1][0][0][1][0];
 
     for (let i = 0; i < limit; i++) {
-        if (imgObjects[i][0][0]["444383007"][1]) {
+        if (imgObjects[i] && imgObjects[i][0][0]["444383007"][1]) {
             let url = imgObjects[i][0][0]["444383007"][1][3][0]; // the url
             urlsArray.push(url);
         }
