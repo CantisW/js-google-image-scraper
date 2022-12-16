@@ -4,7 +4,6 @@
  */
 
 import axios from "axios";
-import * as cheerio from "cheerio";
 
 const headers = {
     "User-Agent":
@@ -39,16 +38,16 @@ const scrape = async (query, limit = 1) => {
      * We are basically finding this script tag and selecting the third one, which contains the actual image data.
      */
 
-    const res = await axios.get(baseUrl, { headers: headers, params: params })
-    const $ = cheerio.load(res.data);
-    let img = $('script:contains("AF_initDataCallback")')[2];
-    // get the JS object inside
-    img = img.children[0].data.replace("AF_initDataCallback(", "").slice(0, -2);
+    const res = await axios.get(baseUrl, { headers: headers, params: params });
+    let body = res.data;
+    body = body.slice(body.lastIndexOf("AF_initDataCallback"));
+    body = body.slice(body.indexOf("["));
+    body = body.slice(0, body.indexOf("</script>")-1);
+    body = body.slice(0, body.lastIndexOf(","));
+    
+    const img = JSON.parse(body);
 
-    // TODO: maybe find a method to get object from string that doesn't involve eval?
-    img = eval("(" + img + ")");
-
-    const imgObjects = img.data[56][1][0][0][1][0];
+    const imgObjects = img[56][1][0][0][1][0];
 
     for (let i = 0; i < limit; i++) {
         if (imgObjects[i] && imgObjects[i][0][0]["444383007"][1]) {
