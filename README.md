@@ -1,5 +1,5 @@
-
-# js-google-image-scraper
+# `js-google-image-scraper`
+[![GitHub](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/guildedjs/guilded.js/blob/main/LICENSE) [![npm version](https://badge.fury.io/js/js-google-image-scraper.svg)](https://badge.fury.io/js/js-google-image-scraper)
 
 Scrapes Google for images.
 
